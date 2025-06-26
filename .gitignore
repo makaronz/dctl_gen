@@ -1,0 +1,13 @@
+.bmad-core/tasks/kb-mode-interaction.md
+.bmad-core/
+.cursor/
+diagrams/
+memory-bank/
+node_modules/
+crawl_dctl_tutorial.py
+all_rules
+CtlManualtxt.txt
+dctl_tutorial_cleaned.md
+dctl_tutorial_complete.md
+docs/stories/1.2.story.md
+web-bundles/

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 DCTL Web Generator - Spectacular Demo</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --secondary: #6366f1;
+            --background: #111827;
+            --card: #1f2937;
+            --border: #374151;
+            --text: #f9fafb;
+            --muted: #9ca3af;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --shadow-panel: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 0 1px rgba(96, 165, 250, 0.5), 0 0 0 4px rgba(96, 165, 250, 0.1);
+        }
+        
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        /* Professional Components */
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-panel);
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-panel);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .code-panel {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-panel);
+        }
+        
+        .code-header {
+            background: #161b22;
+            padding: 12px 16px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .code-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #f0f6fc;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .slider-container {
+            margin: 20px 0;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .slider-track {
+            height: 8px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .slider-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .slider-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: -6px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-panel);
+        }
+        
+        .slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.2);
+        }
+        
+        /* Animations */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+        }
+        
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .animate-fade-in {
+            animation: fade-in-up 0.6s ease-out;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
+            min-height: 80vh;
+        }
+        
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            margin-bottom: 24px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .preview-gradient {
+            height: 120px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #1f2937, #6b7280, #f9fafb);
+            transition: filter 0.3s ease;
+            margin: 16px 0;
+        }
+        
+        /* Syntax Highlighting */
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .number { color: #79c0ff; }
+        .comment { color: #7d8590; }
+        .function { color: #d2a8ff; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1 class="title">🚀 DCTL Web Generator</h1>
+                    <p style="color: var(--muted); margin-top: 4px;">Professional Film Industry Tool</p>
+                </div>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>Live Preview Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="grid">
+            <!-- Left Panel - Controls -->
+            <div class="animate-fade-in">
+                <!-- Exposure & Tone -->
+                <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                    <h3 style="margin-bottom: 16px; color: var(--text);">🎬 Exposure & Tone</h3>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Exposure</span>
+                            <span id="exposure-value">0.2 stops</span>
+                        </div>
+                        <div class="slider-track" data-slider="exposure" data-min="-2" data-max="2" data-value="0.2">
+                            <div class="slider-fill" style="width: 55%;"></div>
+                            <div class="slider-thumb" style="left: 55%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Contrast</span>
+                            <span id="contrast-value">1.1</span>
+                        </div>
+                        <div class="slider-track" data-slider="contrast" data-min="0.5" data-max="2" data-value="1.1">
+                            <div class="slider-fill" style="width: 40%;"></div>
+                            <div class="slider-thumb" style="left: 40%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Grading -->
+                <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                    <h3 style="margin-bottom: 16px; color: var(--text);">🎨 Color Grading</h3>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Saturation</span>
+                            <span id="saturation-value">1.2</span>
+                        </div>
+                        <div class="slider-track" data-slider="saturation" data-min="0" data-max="2" data-value="1.2">
+                            <div class="slider-fill" style="width: 60%;"></div>
+                            <div class="slider-thumb" style="left: 60%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Temperature</span>
+                            <span id="temperature-value">6500K</span>
+                        </div>
+                        <div class="slider-track" data-slider="temperature" data-min="3000" data-max="10000" data-value="6500">
+                            <div class="slider-fill" style="width: 50%;"></div>
+                            <div class="slider-thumb" style="left: 50%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn btn-primary animate-pulse-glow" onclick="generateDCTL()" style="width: 100%; padding: 16px;">
+                        🚀 Generate DCTL Code
+                    </button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button class="btn" onclick="exportCode()" style="background: var(--card); color: var(--text); border: 1px solid var(--border);">
+                            📄 Export
+                        </button>
+                        <button class="btn" onclick="copyCode()" style="background: var(--card); color: var(--text); border: 1px solid var(--border);">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Code & Preview -->
+            <div class="animate-fade-in" style="animation-delay: 0.2s;">
+                <!-- Code Panel -->
+                <div class="code-panel" style="margin-bottom: 24px;">
+                    <div class="code-header">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="display: flex; gap: 6px;">
+                                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                            </div>
+                            <span style="color: #f0f6fc; font-weight: 500;">Generated DCTL Code</span>
+                            <span style="background: #374151; color: #d1d5db; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: 'JetBrains Mono', monospace;">DCTL</span>
+                        </div>
+                        <button onclick="copyCode()" style="background: #374151; color: #d1d5db; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                    <div class="code-content" id="code-content">
+<span class="comment">// Professional DCTL Film Emulation</span>
+<span class="comment">// Created with DCTL Web Generator</span>
+
+<span class="keyword">__DEVICE__</span> <span class="keyword">float3</span> <span class="function">transform</span>(<span class="keyword">int</span> p_Width, <span class="keyword">int</span> p_Height, <span class="keyword">int</span> p_X, <span class="keyword">int</span> p_Y, <span class="keyword">float</span> p_R, <span class="keyword">float</span> p_G, <span class="keyword">float</span> p_B) {
+    <span class="comment">// Input RGB values</span>
+    <span class="keyword">float3</span> rgb = <span class="function">make_float3</span>(p_R, p_G, p_B);
+    
+    <span class="comment">// Parameters (updated in real-time)</span>
+    <span class="keyword">float</span> exposure = <span class="number" id="code-exposure">0.2f</span>;
+    <span class="keyword">float</span> contrast = <span class="number" id="code-contrast">1.1f</span>;
+    <span class="keyword">float</span> saturation = <span class="number" id="code-saturation">1.2f</span>;
+    <span class="keyword">float</span> temperature = <span class="number" id="code-temperature">6500.0f</span>;
+    
+    <span class="comment">// Apply exposure adjustment</span>
+    rgb = rgb * <span class="function">_powf</span>(<span class="number">2.0f</span>, exposure);
+    
+    <span class="comment">// Contrast adjustment</span>
+    rgb.x = <span class="function">_powf</span>(rgb.x, contrast);
+    rgb.y = <span class="function">_powf</span>(rgb.y, contrast);
+    rgb.z = <span class="function">_powf</span>(rgb.z, contrast);
+    
+    <span class="keyword">return</span> rgb;
+}
+                    </div>
+                    <div style="background: #0d1117; padding: 12px 16px; border-top: 1px solid #30363d; font-size: 12px; color: #7d8590;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>UTF-8 • LF • <span id="char-count">423</span> chars</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite;"></div>
+                                <span style="color: var(--success);">DCTL syntax valid</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Preview -->
+                <div class="card" style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="color: var(--text);">🎥 Visual Preview</h3>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            <span>Real-time</span>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-gradient" id="preview-gradient"></div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; font-size: 14px;">
+                        <div style="text-align: center;">
+                            <div style="color: var(--muted); margin-bottom: 4px;">Exposure</div>
+                            <div style="font-family: 'JetBrains Mono', monospace;" id="preview-exposure">0.2 stops</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="color: var(--muted); margin-bottom: 4px;">Contrast</div>
+                            <div style="font-family: 'JetBrains Mono', monospace;" id="preview-contrast">1.1</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="color: var(--muted); margin-bottom: 4px;">Saturation</div>
+                            <div style="font-family: 'JetBrains Mono', monospace;" id="preview-saturation">1.2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slider functionality
+        let isDragging = false;
+        let currentSlider = null;
+        
+        const values = {
+            exposure: 0.2,
+            contrast: 1.1,
+            saturation: 1.2,
+            temperature: 6500
+        };
+        
+        function initSliders() {
+            document.querySelectorAll('.slider-track').forEach(slider => {
+                const thumb = slider.querySelector('.slider-thumb');
+                const fill = slider.querySelector('.slider-fill');
+                
+                thumb.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    currentSlider = slider;
+                    e.preventDefault();
+                });
+                
+                slider.addEventListener('click', (e) => {
+                    if (e.target === slider) {
+                        updateSlider(slider, e);
+                    }
+                });
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && currentSlider) {
+                    updateSlider(currentSlider, e);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                currentSlider = null;
+            });
+        }
+        
+        function updateSlider(slider, event) {
+            const rect = slider.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            
+            const min = parseFloat(slider.dataset.min);
+            const max = parseFloat(slider.dataset.max);
+            const value = min + (percentage / 100) * (max - min);
+            
+            const sliderType = slider.dataset.slider;
+            values[sliderType] = value;
+            
+            // Update UI
+            const thumb = slider.querySelector('.slider-thumb');
+            const fill = slider.querySelector('.slider-fill');
+            
+            thumb.style.left = percentage + '%';
+            fill.style.width = percentage + '%';
+            
+            // Update value display
+            updateValueDisplays(sliderType, value);
+            updatePreview();
+            updateCode();
+        }
+        
+        function updateValueDisplays(type, value) {
+            const formatValue = (type, val) => {
+                switch(type) {
+                    case 'exposure': return val.toFixed(1) + ' stops';
+                    case 'contrast': return val.toFixed(1);
+                    case 'saturation': return val.toFixed(1);
+                    case 'temperature': return Math.round(val) + 'K';
+                    default: return val.toFixed(1);
+                }
+            };
+            
+            document.getElementById(`${type}-value`).textContent = formatValue(type, value);
+            document.getElementById(`preview-${type}`).textContent = formatValue(type, value);
+        }
+        
+        function updatePreview() {
+            const preview = document.getElementById('preview-gradient');
+            const brightness = 1 + values.exposure * 0.3;
+            const contrast = values.contrast;
+            const saturation = values.saturation;
+            const hueRotate = (values.temperature - 6500) / 100;
+            
+            preview.style.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) hue-rotate(${hueRotate}deg)`;
+        }
+        
+        function updateCode() {
+            document.getElementById('code-exposure').textContent = values.exposure.toFixed(1) + 'f';
+            document.getElementById('code-contrast').textContent = values.contrast.toFixed(1) + 'f';
+            document.getElementById('code-saturation').textContent = values.saturation.toFixed(1) + 'f';
+            document.getElementById('code-temperature').textContent = Math.round(values.temperature).toFixed(1) + 'f';
+        }
+        
+        function generateDCTL() {
+            // Add animation effect
+            const btn = event.target;
+            btn.style.background = 'var(--success)';
+            btn.textContent = '✅ Generated!';
+            
+            setTimeout(() => {
+                btn.style.background = 'var(--primary)';
+                btn.textContent = '🚀 Generate DCTL Code';
+            }, 2000);
+        }
+        
+        function copyCode() {
+            const codeContent = document.getElementById('code-content').textContent;
+            navigator.clipboard.writeText(codeContent).then(() => {
+                const btn = event.target;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                }, 2000);
+            });
+        }
+        
+        function exportCode() {
+            const code = document.getElementById('code-content').textContent;
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'film_emulation.dctl';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initSliders();
+            updatePreview();
+            updateCode();
+        });
+    </script>
+</body>
+</html> 
