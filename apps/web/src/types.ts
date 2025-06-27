@@ -1,7 +1,7 @@
-// Base type for all parameters
-export interface BaseParameter {
-  id: string;
-  name: string;
+import { BaseParameterCore, UIParameterType, ColorValue } from '../../../src/types/shared';
+
+// Base type for UI parameters - extends shared core with UI-specific properties
+export interface BaseParameter extends BaseParameterCore {
   label: string;
   description?: string;
   enabled: boolean; // For bypass functionality
@@ -9,7 +9,7 @@ export interface BaseParameter {
 
 // Slider (float)
 export interface SliderParameter extends BaseParameter {
-  type: 'slider';
+  type: Extract<UIParameterType, 'slider'>;
   value: number;
   min: number;
   max: number;
@@ -18,13 +18,13 @@ export interface SliderParameter extends BaseParameter {
 
 // Checkbox (boolean)
 export interface CheckboxParameter extends BaseParameter {
-  type: 'checkbox';
+  type: Extract<UIParameterType, 'checkbox'>;
   value: boolean;
 }
 
 // Int Slider
 export interface IntSliderParameter extends BaseParameter {
-  type: 'int_slider';
+  type: Extract<UIParameterType, 'int_slider'>;
   value: number;
   min: number;
   max: number;
@@ -32,13 +32,13 @@ export interface IntSliderParameter extends BaseParameter {
 
 // Value Box (float)
 export interface ValueBoxParameter extends BaseParameter {
-  type: 'value_box';
+  type: Extract<UIParameterType, 'value_box'>;
   value: number;
 }
 
 // Combo Box (dropdown)
 export interface ComboBoxParameter extends BaseParameter {
-  type: 'combo_box';
+  type: Extract<UIParameterType, 'combo_box'>;
   value: number; // The index of the selected item
   options: string[]; // e.g., ["RED", "GREEN", "BLUE"]
   optionLabels: string[]; // e.g., ["Channel Red", "Channel Green", "Channel Blue"]
@@ -46,8 +46,8 @@ export interface ComboBoxParameter extends BaseParameter {
 
 // Color (float3)
 export interface ColorParameter extends BaseParameter {
-    type: 'color';
-    value: { r: number; g: number; b: number };
+    type: Extract<UIParameterType, 'color'>;
+    value: ColorValue;
 }
 
 // A union of all possible parameter types

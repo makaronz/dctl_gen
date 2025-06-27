@@ -1,17 +1,10 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
-import {
-  DctlParameter,
-  SliderParameter,
-  CheckboxParameter,
-  IntSliderParameter,
-  ValueBoxParameter,
-  ComboBoxParameter,
-  ColorParameter,
-} from '../../types';
+import { DctlParameter } from '../../types';
+import { UIParameterType } from '../../../../../src/types/shared';
 
-export type ParameterType = DctlParameter['type'];
+export type ParameterType = UIParameterType;
 
 interface DctlGeneratorState {
   worker: Worker | null;
@@ -23,6 +16,8 @@ interface DctlGeneratorState {
   removeParameter: (id: string) => void;
   updateParameter: (id: string, newValues: Partial<DctlParameter>) => void;
   toggleParameterEnabled: (id: string) => void;
+  exportDctl: (filename?: string) => void;
+  copyToClipboard: () => Promise<void>;
 }
 
 
@@ -98,6 +93,38 @@ export const useDctlStore = create(
         }
       });
       get().worker?.postMessage(get().parameters);
+    },
+
+    exportDctl: (filename = 'generated_transform.dctl') => {
+      const { generatedCode } = get();
+      const blob = new Blob([generatedCode], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename.endsWith('.dctl') ? filename : `${filename}.dctl`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+    },
+
+    copyToClipboard: async () => {
+      const { generatedCode } = get();
+      try {
+        await navigator.clipboard.writeText(generatedCode);
+        return Promise.resolve();
+      } catch (err) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = generatedCode;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return Promise.resolve();
+      }
     }
   }))
 ); 

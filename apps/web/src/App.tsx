@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDctlStore } from './features/dctl-generator/store';
 import { PropertiesPanel } from './features/dctl-generator/components/PropertiesPanel';
-import { DctlParameter } from './types';
 import { ParameterType } from './features/dctl-generator/store';
 import { Button } from './components/ui/button';
-import { SlidersHorizontal, ToggleRight, Hash, CaseSensitive, Palette, List } from 'lucide-react';
+import { SlidersHorizontal, ToggleRight, Hash, CaseSensitive, Palette, List, Download, Copy, Check } from 'lucide-react';
 import { StagewiseToolbar } from '@stagewise/toolbar-react';
 import { ReactPlugin } from '@stagewise-plugins/react';
 
@@ -35,13 +34,67 @@ function Sidebar() {
   );
 }
 
-function CodePanel() {
-  const generatedCode = useDctlStore((state) => state.generatedCode);
+function StatusIndicator() {
+  const { parameters, worker } = useDctlStore();
+  const activeParams = parameters.filter(p => p.enabled).length;
+  const totalParams = parameters.length;
+  
   return (
-    <div className="bg-gray-900 text-white font-mono text-sm p-4 rounded-lg h-full">
-      <pre className="whitespace-pre-wrap break-all">
-        <code>{generatedCode}</code>
-      </pre>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1">
+        <div className={`w-2 h-2 rounded-full ${worker ? 'bg-green-500' : 'bg-red-500'}`} />
+        <span>{worker ? 'Ready' : 'Loading...'}</span>
+      </div>
+      <span>Parameters: {activeParams}/{totalParams} active</span>
+      {totalParams > 0 && (
+        <span>Code: {parameters.length > 0 ? 'Generated' : 'Empty'}</span>
+      )}
+    </div>
+  );
+}
+
+function CodePanel() {
+  const { generatedCode, exportDctl, copyToClipboard } = useDctlStore();
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = async () => {
+    await copyToClipboard();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
+  return (
+    <div className="bg-gray-900 text-white font-mono text-sm rounded-lg h-full flex flex-col">
+      <div className="flex justify-between items-center p-3 border-b border-gray-700">
+        <span className="text-xs text-gray-400">Generated DCTL Code</span>
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={handleCopy}
+            className="h-7 px-2 text-xs"
+            disabled={!generatedCode || generatedCode.includes('Click on the sidebar')}
+          >
+            {copied ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
+            {copied ? 'Copied!' : 'Copy'}
+          </Button>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={() => exportDctl()}
+            className="h-7 px-2 text-xs"
+            disabled={!generatedCode || generatedCode.includes('Click on the sidebar')}
+          >
+            <Download className="h-3 w-3 mr-1" />
+            Export
+          </Button>
+        </div>
+      </div>
+      <div className="p-4 flex-grow overflow-auto">
+        <pre className="whitespace-pre-wrap break-all">
+          <code>{generatedCode}</code>
+        </pre>
+      </div>
     </div>
   );
 }
@@ -76,8 +129,15 @@ export default function App() {
             </div>
           </aside>
         </div>
-        <footer className="flex-shrink-0 h-8 flex items-center px-4 border-t border-gray-700 text-xs text-gray-400">
-          <p>Checklist: (todo)</p>
+        <footer className="flex-shrink-0 h-8 flex items-center justify-between px-4 border-t border-gray-700 text-xs text-gray-400">
+          <div className="flex items-center gap-4">
+            <StatusIndicator />
+          </div>
+          <div className="flex items-center gap-2">
+            <span>DCTL Generator v1.0.0</span>
+            <span>•</span>
+            <span>Professional Color Transformation Tool</span>
+          </div>
         </footer>
       </div>
       <StagewiseToolbar config={{ plugins: [ReactPlugin] }} />

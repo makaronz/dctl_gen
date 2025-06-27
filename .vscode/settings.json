@@ -3,9 +3,13 @@
         "DCTL",
         "dctlpkg",
         "dctlproj",
+        "luma",
         "luts",
+        "Manualtxt",
+        "powf",
         "prefs",
         "shadcn",
+        "Stagewise",
         "WCAG"
     ]
 }

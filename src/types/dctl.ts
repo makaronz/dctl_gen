@@ -1,43 +1,24 @@
 // src/types/dctl.ts
 
-// Unique identifier type
-export type UUID = string;
+import { 
+  UUID, 
+  CoreParameterType, 
+  ColorValue, 
+  ValidationResult, 
+  BaseParameterMetadata,
+  BaseParameterCore 
+} from './shared';
 
-// Supported parameter types
-export type ParameterType = 'float' | 'int' | 'bool' | 'enum' | 'color' | 'matrix';
-
-/**
- * Generic validation result used across builder and validators.
- */
-export interface ValidationResult {
-  errors: string[];
-  warnings: string[];
-  /** Convenience boolean – true when errors.length === 0 */
-  isValid: boolean;
-}
+// Re-export for backward compatibility
+export type ParameterType = CoreParameterType;
+export type { UUID, ColorValue, ValidationResult, BaseParameterMetadata };
 
 /**
- * Minimal metadata for parameters – will be extended in future stories.
+ * Parameter definition for DCTL AST – extends shared base
  */
-export interface BaseParameterMetadata {
-  /** Display range for editors (if numeric) */
-  range?: [number, number];
-  /** Default numeric precision */
-  precision?: number;
-  /** Default value before user modification */
-  defaultValue?: number | string | boolean;
-}
-
-/**
- * Parameter definition – simplified for Story 1.1 needs.
- */
-export interface ParameterDefinition<T extends ParameterType = ParameterType> {
-  id: UUID;
+export interface ParameterDefinition<T extends ParameterType = ParameterType> extends BaseParameterCore {
   type: T;
-  name: string;
   displayName?: string;
-  /** Category/group used in UI */
-  category?: string;
   metadata?: BaseParameterMetadata;
 }
 
