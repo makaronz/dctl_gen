@@ -3,9 +3,10 @@ import { useDctlStore } from './features/dctl-generator/store';
 import { PropertiesPanel } from './features/dctl-generator/components/PropertiesPanel';
 import { ParameterType } from './features/dctl-generator/store';
 import { Button } from './components/ui/button';
-import { SlidersHorizontal, ToggleRight, Hash, CaseSensitive, Palette, List, Download, Copy, Check } from 'lucide-react';
+import { SlidersHorizontal, ToggleRight, Hash, CaseSensitive, Palette, List, Download, Copy, Check, FileText, Upload } from 'lucide-react';
 import { StagewiseToolbar } from '@stagewise/toolbar-react';
 import { ReactPlugin } from '@stagewise-plugins/react';
+import { DctlLoaderApp } from './features/dctl-loader/DctlLoaderApp';
 
 const PARAMETER_ICONS: Record<ParameterType, React.ElementType> = {
   slider: SlidersHorizontal,
@@ -99,44 +100,109 @@ function CodePanel() {
   );
 }
 
+type TabType = 'generator' | 'loader';
+
 export default function App() {
   const { initWorker } = useDctlStore();
+  const [activeTab, setActiveTab] = useState<TabType>('generator');
 
   useEffect(() => {
     initWorker();
   }, [initWorker]);
 
+  const tabs = [
+    {
+      id: 'generator' as TabType,
+      name: 'DCTL Generator',
+      icon: FileText,
+      description: 'Create DCTL files from scratch'
+    },
+    {
+      id: 'loader' as TabType,
+      name: 'DCTL Loader',
+      icon: Upload,
+      description: 'Load and modify existing DCTL files'
+    }
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'generator':
+        return (
+          <div className="flex flex-grow overflow-hidden">
+            <Sidebar />
+            <main className="flex-grow p-4 overflow-auto">
+              <PropertiesPanel />
+            </main>
+            <aside className="w-1/2 border-l border-gray-700 flex flex-col">
+              <div className="h-3/4 p-4 flex flex-col">
+                <h2 className="text-lg font-semibold mb-3 border-b border-gray-700 pb-2 flex-shrink-0">Live Code Preview</h2>
+                <div className="flex-grow overflow-auto">
+                  <CodePanel/>
+                </div>
+              </div>
+              <div className="h-1/4 p-4 border-t border-gray-700">
+                <h2 className="text-lg font-semibold mb-3 border-b border-gray-700 pb-2">Preview A/B (todo)</h2>
+              </div>
+            </aside>
+          </div>
+        );
+      case 'loader':
+        return <DctlLoaderApp />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <div className="bg-gray-900 text-gray-200 h-screen flex flex-col font-sans">
-        <header className="flex-shrink-0 h-12 flex items-center px-4 border-b border-gray-700">
-          <h1 className="text-lg font-semibold">DCTL Generator</h1>
+        {/* Header with Tabs */}
+        <header className="flex-shrink-0 border-b border-gray-700">
+          <div className="flex items-center justify-between px-4 h-12">
+            <h1 className="text-lg font-semibold">DCTL Professional Suite</h1>
+            <div className="text-xs text-gray-400">v1.0.0</div>
+          </div>
+          
+          {/* Tab Navigation */}
+          <div className="flex border-b border-gray-800">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                    isActive
+                      ? 'text-blue-400 border-blue-400 bg-gray-800'
+                      : 'text-gray-400 border-transparent hover:text-gray-300 hover:bg-gray-800/50'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.name}</span>
+                </button>
+              );
+            })}
+          </div>
         </header>
-        <div className="flex flex-grow overflow-hidden">
-          <Sidebar />
-          <main className="flex-grow p-4 overflow-auto">
-            <PropertiesPanel />
-          </main>
-          <aside className="w-1/2 border-l border-gray-700 flex flex-col">
-            <div className="h-3/4 p-4 flex flex-col">
-              <h2 className="text-lg font-semibold mb-3 border-b border-gray-700 pb-2 flex-shrink-0">Live Code Preview</h2>
-              <div className="flex-grow overflow-auto">
-                  <CodePanel/>
-              </div>
-            </div>
-            <div className="h-1/4 p-4 border-t border-gray-700">
-              <h2 className="text-lg font-semibold mb-3 border-b border-gray-700 pb-2">Preview A/B (todo)</h2>
-            </div>
-          </aside>
+
+        {/* Tab Content */}
+        <div className="flex-grow overflow-hidden">
+          {renderTabContent()}
         </div>
+
+        {/* Footer */}
         <footer className="flex-shrink-0 h-8 flex items-center justify-between px-4 border-t border-gray-700 text-xs text-gray-400">
           <div className="flex items-center gap-4">
-            <StatusIndicator />
+            {activeTab === 'generator' && <StatusIndicator />}
+            <span>Active: {tabs.find(t => t.id === activeTab)?.description}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>DCTL Generator v1.0.0</span>
+            <span>DCTL Professional Suite</span>
             <span>•</span>
-            <span>Professional Color Transformation Tool</span>
+            <span>Color Transformation Tools</span>
           </div>
         </footer>
       </div>
